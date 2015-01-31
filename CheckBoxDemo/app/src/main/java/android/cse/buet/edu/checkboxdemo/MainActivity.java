@@ -32,12 +32,10 @@ public class MainActivity extends Activity {
     doneButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        StringBuilder resultBuilder = new StringBuilder();
-
-        resultBuilder.append(String.format("iOS selected ? %b%n", iosCheckBox.isChecked()))
-            .append(String.format("Android selected ? %b%n", androidCheckBox.isChecked()))
-            .append(String.format("Windows selected ? %b%n", windowsCheckBox.isChecked()));
-        Toast.makeText(MainActivity.this, resultBuilder.toString(), Toast.LENGTH_LONG).show();
+        String result = String.format("iOS selected ? %b%n", iosCheckBox.isChecked())
+            .concat(String.format("Android selected ? %b%n", androidCheckBox.isChecked()))
+            .concat(String.format("Windows selected ? %b%n", windowsCheckBox.isChecked()));
+        Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
       }
     });
   }
