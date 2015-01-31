@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToggleButtonDemo</string>
+    <string name="action_settings">Settings</string>
+    <string name="toggle_active">Active</string>
+    <string name="toggle_premium">Premium</string>
+    <string name="btn_done">Done !</string>
+    <string name="active_text">Active</string>
+    <string name="premium_text">Premium</string>
+</resources>
