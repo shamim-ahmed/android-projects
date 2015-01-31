@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RadioButtonDemo</string>
+    <string name="action_settings">Settings</string>
+    <string name="male_text">Male</string>
+    <string name="female_text">Female</string>
+    <string name="done_text">Done !</string>
+
+</resources>
