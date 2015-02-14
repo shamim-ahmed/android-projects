@@ -3,6 +3,7 @@ package android.cse.buet.edu.rssfeeddemo;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ public class MainActivity extends Activity {
     setContentView(R.layout.activity_main);
 
     textView = (TextView) findViewById(R.id.rssText);
+    textView.setMovementMethod(new ScrollingMovementMethod());
     Button fetchButton = (Button) findViewById(R.id.fetchButton);
 
     fetchButton.setOnClickListener(new View.OnClickListener() {
@@ -35,7 +37,6 @@ public class MainActivity extends Activity {
       }
     });
   }
-
 
   private class FetchRssTask extends AsyncTask<String, Void, String> {
 

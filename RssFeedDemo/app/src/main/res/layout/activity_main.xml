@@ -15,7 +15,9 @@
         android:id="@+id/rssText"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="52dp"/>
+        android:layout_marginTop="52dp"
+        android:maxLines="16"
+        android:scrollbars="vertical"/>
 
     <Button
         android:layout_width="wrap_content"
