@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class MainActivity extends Activity {
 
   private static final String[] MONTH_NAMES = {"January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December" };
+      "July", "August", "September", "October", "November", "December" };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +22,13 @@ public class MainActivity extends Activity {
 
     final Spinner spinner1 = (Spinner) findViewById(R.id.spinner1);
     final Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
-    Button okButton = (Button) findViewById(R.id.okButton);
 
-    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item,
+    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
         Arrays.asList(MONTH_NAMES));
+    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     spinner2.setAdapter(arrayAdapter);
+
+    Button okButton = (Button) findViewById(R.id.okButton);
 
     okButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -36,6 +38,5 @@ public class MainActivity extends Activity {
             Toast.LENGTH_LONG).show();
       }
     });
-
   }
 }
