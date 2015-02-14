@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity {
-
+  private static final String LINE_SEPARATOR = System.getProperty("line.separator");
   private TextView xmlContent;
 
   @Override
@@ -59,7 +59,13 @@ public class MainActivity extends Activity {
         parser.nextTag();  // move to <channel>
         List<Item> itemList = getItems(parser);
 
-        result.append(itemList.toString());
+        for (Item item : itemList) {
+          result.append(item.getTitle()).append(LINE_SEPARATOR);
+          result.append(item.getDescription()).append(LINE_SEPARATOR);
+          result.append(item.getLink()).append(LINE_SEPARATOR);
+          result.append(LINE_SEPARATOR);
+        }
+
       } catch (Exception ex) {
         // very innovative way to figure out what went wrong
         Toast.makeText(MainActivity.this, String.format("An exception occurred : %s", ex.toString()), Toast.LENGTH_LONG).show();
@@ -92,7 +98,6 @@ public class MainActivity extends Activity {
           }
         }
       } catch (Exception ex) {
-        // very innovative way to figure out what went wrong
         Toast.makeText(MainActivity.this, String.format("An exception occurred : %s", ex.toString()), Toast.LENGTH_LONG).show();
       }
 
@@ -141,10 +146,14 @@ public class MainActivity extends Activity {
 
       while (depth != 0) {
         int n = parser.next();
-        if (n == XmlPullParser.END_TAG) {
-          depth--;
-        } else if (n == XmlPullParser.START_TAG) {
-          depth++;
+
+        switch (n) {
+          case XmlPullParser.END_TAG:
+            depth--;
+            break;
+          case XmlPullParser.START_TAG:
+            depth++;
+            break;
         }
       }
     }
