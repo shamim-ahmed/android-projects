@@ -7,9 +7,16 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
@@ -44,16 +51,18 @@ public class MainActivity extends Activity {
 
       try {
         InputStream in = getResources().openRawResource(params[0]);
-        Scanner scanner = new Scanner(in);
+        XmlPullParserFactory parserFactory = XmlPullParserFactory.newInstance();
+        XmlPullParser parser = parserFactory.newPullParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+        parser.setInput(in, "UTF-8");
+        parser.nextTag();  // move to <rss>
+        parser.nextTag();  // move to <channel>
+        List<Item> itemList = getItems(parser);
 
-        while (scanner.hasNextLine()) {
-          String line = scanner.nextLine();
-          result.append(line).append(System.getProperty("line.separator"));
-        }
-
-        scanner.close();
+        result.append(itemList.toString());
       } catch (Exception ex) {
-        result.append(ex.toString());
+        // very innovative way to figure out what went wrong
+        Toast.makeText(MainActivity.this, String.format("An exception occurred : %s", ex.toString()), Toast.LENGTH_LONG).show();
       }
 
       return result.toString();
@@ -62,6 +71,82 @@ public class MainActivity extends Activity {
     @Override
     protected void onPostExecute(String str) {
       xmlContent.setText(str);
+    }
+
+    private List<Item> getItems(XmlPullParser parser) {
+      List<Item> itemList = new ArrayList<>();
+
+      try {
+        parser.require(XmlPullParser.START_TAG, null, "channel");
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+          if (parser.getEventType() != XmlPullParser.START_TAG) {
+            continue;
+          }
+
+          if (parser.getName().equals("item")) {
+            Item item = parseItem(parser);
+            itemList.add(item);
+          } else {
+            skipCurrentElement(parser);
+          }
+        }
+      } catch (Exception ex) {
+        // very innovative way to figure out what went wrong
+        Toast.makeText(MainActivity.this, String.format("An exception occurred : %s", ex.toString()), Toast.LENGTH_LONG).show();
+      }
+
+      return itemList;
+    }
+
+    private Item parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
+      if (parser.getEventType() != XmlPullParser.START_TAG) {
+        throw new IllegalStateException();
+      }
+
+      Item item = new Item();
+
+      while (parser.next() != XmlPullParser.END_TAG) {
+        if (parser.getEventType() != XmlPullParser.START_TAG) {
+          continue;
+        }
+
+        String name = parser.getName();
+
+        switch (name) {
+          case "title":
+            item.setTitle(parser.nextText());
+            break;
+          case "link":
+            item.setLink(parser.nextText());
+            break;
+          case "description":
+            item.setDescription(parser.nextText());
+            break;
+          default:
+            skipCurrentElement(parser);
+            break;
+        }
+      }
+
+      return item;
+    }
+
+    private void skipCurrentElement(XmlPullParser parser) throws XmlPullParserException, IOException {
+      if (parser.getEventType() != XmlPullParser.START_TAG) {
+        throw new IllegalStateException();
+      }
+
+      int depth = 1;
+
+      while (depth != 0) {
+        int n = parser.next();
+        if (n == XmlPullParser.END_TAG) {
+          depth--;
+        } else if (n == XmlPullParser.START_TAG) {
+          depth++;
+        }
+      }
     }
   }
 }
